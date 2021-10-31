@@ -3,6 +3,7 @@ import * as t from 'io-ts'
 import { createGet } from './api-client'
 import { publicApiBaseUrl, PublicApiPaths } from './constants'
 import {
+  ChartBarType,
   ChartData,
   Currency,
   ExchangeSymbol,
@@ -41,7 +42,7 @@ export const getRates = async (): Promise<Rates> =>
 
 export const getChartData = async (
   symbolName: SymbolName,
-  barType: string,
+  barType: ChartBarType,
   count = ''
 ): Promise<ChartData> =>
   get(

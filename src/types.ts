@@ -146,6 +146,8 @@ export const ChartBarType = t.union([
   t.literal('DAY'),
   t.literal('WEEK'),
 ])
+export type ChartBarType = t.TypeOf<typeof ChartBarType>
+
 export const ChartData = t.type({
   symbol: SymbolName,
   barType: ChartBarType,
