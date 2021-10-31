@@ -1,0 +1,34 @@
+{
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "ignorePatterns": ["node_modules/**", "*.d.ts"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "import",
+    "simple-import-sort",
+    "unused-imports"
+  ],
+  "rules": {
+    "import/no-default-export": "error",
+    "no-console": "warn",
+    "no-duplicate-imports": "error",
+    "no-irregular-whitespace": "error",
+    "prefer-const": "warn",
+    "prettier/prettier": "error",
+    "unused-imports/no-unused-imports": "error",
+    "semi": ["error", "never"],
+    "simple-import-sort/imports": [
+      "warn",
+      {
+        "groups": [
+          ["^\\u0000"],
+          ["^@?\\w"],
+          ["^"],
+          ["^\\."]
+        ]
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}
