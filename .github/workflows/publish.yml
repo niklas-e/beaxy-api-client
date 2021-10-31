@@ -17,7 +17,7 @@ jobs:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
       - run: yarn
-      - run: yarn publish --access public
+      - run: yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -25,6 +25,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           registry-url: 'https://npm.pkg.github.com'
-      - run: yarn publish
+      - run: yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
