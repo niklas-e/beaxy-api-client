@@ -191,3 +191,24 @@ export const OrderBookDepth = t.union([
   t.literal('20'),
 ])
 export type OrderBookDepth = t.TypeOf<typeof OrderBookDepth>
+
+export const Currency = t.type({
+  currency: t.string,
+  name: t.string,
+  precision: t.number,
+  dailyDepositThreshold: t.number,
+  dailyWithdrawalThreshold: t.number,
+  weeklyDepositThreshold: t.number,
+  weeklyWithdrawalThreshold: t.number,
+  monthlyDepositThreshold: t.number,
+  monthlyWithdrawalThreshold: t.number,
+  dailyDepositLimit: t.number,
+  dailyWithdrawalLimit: t.number,
+  weeklyDepositLimit: t.number,
+  weeklyWithdrawalLimit: t.number,
+  monthlyDepositLimit: t.number,
+  monthlyWithdrawalLimit: t.number,
+  minimalWithdrawal: t.number,
+  type: CurrencyType,
+})
+export type Currency = t.TypeOf<typeof Currency>

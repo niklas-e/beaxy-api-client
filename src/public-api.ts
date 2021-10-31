@@ -4,7 +4,7 @@ import { createGet } from './api-client'
 import { publicApiBaseUrl, PublicApiPaths } from './constants'
 import {
   ChartData,
-  CurrencyType,
+  Currency,
   ExchangeSymbol,
   OrderBook,
   OrderBookDepth,
@@ -52,24 +52,3 @@ export const getChartData = async (
 
 export const getCurrencies = async (): Promise<Array<Currency>> =>
   get({ response: t.array(Currency) }, `${PublicApiPaths.Currencies}`)
-
-const Currency = t.type({
-  currency: t.string,
-  name: t.string,
-  precision: t.number,
-  dailyDepositThreshold: t.number,
-  dailyWithdrawalThreshold: t.number,
-  weeklyDepositThreshold: t.number,
-  weeklyWithdrawalThreshold: t.number,
-  monthlyDepositThreshold: t.number,
-  monthlyWithdrawalThreshold: t.number,
-  dailyDepositLimit: t.number,
-  dailyWithdrawalLimit: t.number,
-  weeklyDepositLimit: t.number,
-  weeklyWithdrawalLimit: t.number,
-  monthlyDepositLimit: t.number,
-  monthlyWithdrawalLimit: t.number,
-  minimalWithdrawal: t.number,
-  type: CurrencyType,
-})
-type Currency = t.TypeOf<typeof Currency>
