@@ -2,13 +2,15 @@
   "name": "beaxy-api-client",
   "version": "0.1.0",
   "description": "Unofficial client for Beaxy Exchange APIs",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "github:niklas-e",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
     "lint": "eslint",
-    "fix": "eslint --fix"
+    "fix": "eslint --fix",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "fp-ts": "^2.11.5",
