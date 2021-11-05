@@ -11,3 +11,4 @@ export enum PublicApiPaths {
 }
 
 export const publicApiBaseUrl = 'https://services.beaxy.com/api/v2'
+export const tradingApiBaseUrl = 'https://tradewith.beaxy.com/api/v2'
