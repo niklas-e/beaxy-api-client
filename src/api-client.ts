@@ -13,6 +13,7 @@ const RequestOptions = t.type({
 type RequestOptions = {
   method: RequestMethod
   body?: string
+  headers?: { [key: string]: string }
 }
 
 const apiRequest = async <Body, Response, QueryParams>(
@@ -29,6 +30,8 @@ const apiRequest = async <Body, Response, QueryParams>(
     method: options.method.toUpperCase() as HttpMethod,
     headers: {
       Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...options.headers,
     },
   })
 
@@ -51,5 +54,35 @@ export const createGet =
       { response: types.response, query: types.query },
       `${baseUrl}${path}?${params.toString()}`,
       { method: 'get' }
+    )
+  }
+
+type PostRequestParams<Body, QueryParams> = {
+  path: string
+  body: Body
+  queryParameters?: QueryParams
+  headers?: { [key: string]: string }
+}
+
+export const createPost =
+  (baseUrl: string) =>
+  async <Response, Body, QueryParams>(
+    types: Partial<{
+      response: t.Type<Response, any>
+      body: t.Type<Body, any>
+      query: t.Type<QueryParams, any>
+    }>,
+    {
+      path,
+      body,
+      queryParameters,
+      headers,
+    }: PostRequestParams<Body, QueryParams>
+  ): Promise<Response> => {
+    const params = new URLSearchParams(queryParameters ?? {})
+    return await apiRequest(
+      { response: types.response, query: types.query, body: types.body },
+      `${baseUrl}${path}?${params.toString()}`,
+      { method: 'post', body: JSON.stringify(body), headers }
     )
   }
