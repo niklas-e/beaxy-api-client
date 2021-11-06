@@ -4,7 +4,14 @@
   "description": "Unofficial client for Beaxy Exchange APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "author": "github:niklas-e",
+  "engines": {
+    "node": ">=14"
+  },
+  "author": {
+    "name": "Niklas Engblom",
+    "url": "http://niklas-e.fi"
+  },
+  "homepage": "https://github.com/niklas-e/beaxy-api-client",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
@@ -28,5 +35,17 @@
     "prettier": "^2.4.1",
     "typescript": "^4.4.4"
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "yarn@3.1.0",
+  "bugs": {
+    "url": "https://github.com/niklas-e/beaxy-api-client/issues"
+  },
+  "keywords": [
+    "api",
+    "cryptocurrency",
+    "beaxy exchange"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "github:niklas-e/beaxy-api-client"
+  }
 }

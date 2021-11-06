@@ -27,7 +27,7 @@ const getOrderBook = async (symbolName: string) =>
 
 ## License
 
-[MIT - Copyright 2021 Niklas Engblom (niklas-e)](./LICENSE.md)
+[MIT - Copyright 2021 Niklas Engblom (niklas-e)](https://github.com/niklas-e/beaxy-api-client/blob/main/LICENSE.md)
 
 [npm-image]: https://img.shields.io/npm/v/beaxy-api-client.svg
 [npm-url]: https://npmjs.org/package/beaxy-api-client
