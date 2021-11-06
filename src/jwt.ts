@@ -1,11 +1,11 @@
-import { Override } from './types'
+import { Override, UUID } from './utility-types'
 
 export type PermissionClaim = 'Trade' | 'Read' | 'Withdraw'
 type TokenClaims = {
-  iat: string
-  jti: string
-  uid: string
-  aid: string
+  iat: UUID
+  jti: UUID
+  uid: UUID
+  aid: UUID
   ipw: boolean
   ip?: string
   trd: string
@@ -36,5 +36,5 @@ export const getTokenClaims = (token: string): TokenClaims => {
 const normalizeClaims = (claims: RawClaims): TokenClaims => ({
   ...claims,
   ipw: claims.ipw.toLowerCase() === 'true' ? true : false,
-  prm: [claims.prm].flat().map((x) => x.toLowerCase() as PermissionClaim),
+  prm: [claims.prm].flat(),
 })

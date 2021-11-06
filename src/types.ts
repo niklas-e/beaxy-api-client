@@ -1,7 +1,5 @@
 import * as t from 'io-ts'
 
-export type Override<T1, T2> = Omit<T1, keyof T2> & T2
-
 export const CurrencyType = t.union([t.literal('crypto'), t.literal('fiat')])
 export type CurrencyType = t.TypeOf<typeof CurrencyType>
 
