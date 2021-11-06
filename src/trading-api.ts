@@ -2,6 +2,7 @@ import * as t from 'io-ts'
 
 import { createPost } from './api-client'
 import { tradingApiBaseUrl, TradingApiPaths } from './constants'
+import { getTokenClaims, PermissionClaim } from './jwt'
 
 const post = createPost(tradingApiBaseUrl)
 
@@ -19,6 +20,7 @@ type AuthResult = t.TypeOf<typeof AuthResult>
 type Jwt = {
   expiresAt: number
   token: string
+  permissions: PermissionClaim[]
 }
 let jwt: Jwt
 
@@ -45,9 +47,11 @@ export const login = async (
   )
   const expiryInMilliseconds = authResult.expires_in * 1000
   const safeExpiryModifier = 1000 * 60 * 3
+  const claims = getTokenClaims(authResult.access_token)
   jwt = {
     expiresAt: Date.now() + expiryInMilliseconds - safeExpiryModifier,
     token: authResult.access_token,
+    permissions: claims.prm,
   }
 
   if (enableAutoRefresh) {
@@ -61,3 +65,17 @@ export const login = async (
 
   return { ...jwt }
 }
+
+const assertPermission = (requiredPermission: PermissionClaim) => {
+  if (!jwt) {
+    throw new Error(
+      'You must use login() before using other trading API endpoints'
+    )
+  }
+  if (jwt.permissions.includes(requiredPermission)) return
+
+  throw new Error(
+    `Auth token does not have required permissions to perform the action.`
+  )
+}
+
