@@ -25,7 +25,7 @@ const apiRequest = async <Body, Response, QueryParams>(
   url: string,
   options: RequestOptions
 ): Promise<Response> => {
-  const { body } = await request(url, {
+  const { body, statusCode } = await request(url, {
     ...options,
     method: options.method.toUpperCase() as HttpMethod,
     headers: {
@@ -35,8 +35,14 @@ const apiRequest = async <Body, Response, QueryParams>(
     },
   })
 
-  const result = await body.json()
-  return decodeInput(types.response, result)
+  const result = await body.text()
+  if (statusCode >= 200 && statusCode < 300) {
+    return decodeInput(types.response, JSON.parse(result))
+  }
+
+  throw new Error(
+    `API returned with status ${statusCode}. Response body: ${result}`
+  )
 }
 
 export const createGet =
