@@ -3,6 +3,8 @@ import * as t from 'io-ts'
 import { createPost } from './api-client'
 import { tradingApiBaseUrl, TradingApiPaths } from './constants'
 import { getTokenClaims, PermissionClaim } from './jwt'
+import { SymbolName } from './types'
+import { UUID } from './utility-types'
 
 const post = createPost(tradingApiBaseUrl)
 
@@ -79,3 +81,50 @@ const assertPermission = (requiredPermission: PermissionClaim) => {
   )
 }
 
+const TradingApiError = t.type({
+  error_code: t.string,
+  tracking_id: UUID,
+  items: t.array(t.string),
+})
+
+const OrderParameters = t.intersection([
+  t.type({
+    symbol: SymbolName,
+    quantity: t.number,
+    side: t.union([t.literal('buy'), t.literal('sell')]),
+    type: t.union([t.literal('market'), t.literal('limit')]),
+  }),
+  t.partial({
+    comment: t.string,
+    useUtilityTokenForFees: t.boolean,
+    postOnly: t.boolean,
+    price: t.number,
+  }),
+])
+type OrderParameters = t.TypeOf<typeof OrderParameters>
+const PlaceOrderResponse = t.union([
+  t.type({ order_id: UUID }),
+  TradingApiError,
+])
+export const placeOrder = async (params: OrderParameters) => {
+  assertPermission('Trade')
+  return post(
+    { body: t.UnknownRecord, response: PlaceOrderResponse },
+    {
+      path: TradingApiPaths.Orders,
+      body: {
+        symbol: params.symbol,
+        order_type: params.type,
+        side: params.side,
+        size: params.quantity,
+        comment: params.comment,
+        pay_with_utility_token: params.useUtilityTokenForFees ?? false,
+        post_only: params.postOnly ?? false,
+        price: params.price,
+      },
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
