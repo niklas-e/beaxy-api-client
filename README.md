@@ -3,6 +3,8 @@
 [![NPM Version][npm-image]][npm-url]
 [![build][build-image]][build-url]
 
+> ⚠️ Note: this is a prerelease version and things might change quite a bit before version 1.0.0, so you should use exact version as your dependency to avoid unexpected (potentially breaking) changes ⚠️
+
 Unofficial [Beaxy Exchange](https://beaxy.com) API Client written in TypeScript with runtime type validation ([io-ts](https://www.npmjs.com/package/io-ts)).
 
 ## Install
