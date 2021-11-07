@@ -1,6 +1,6 @@
 import * as t from 'io-ts'
 
-import { createPost } from './api-client'
+import { createGet, createPost } from './api-client'
 import { tradingApiBaseUrl, TradingApiPaths } from './constants'
 import { getTokenClaims, PermissionClaim } from './jwt'
 import { SymbolName } from './types-common'
@@ -13,6 +13,7 @@ import {
 import { UUID } from './utility-types'
 
 const post = createPost(tradingApiBaseUrl)
+const get = createGet(tradingApiBaseUrl)
 
 type Jwt = {
   expiresAt: number
@@ -111,6 +112,41 @@ export const placeOrder = async (
         post_only: params.postOnly ?? false,
         price: params.price,
       },
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const getClosedOrders = async (
+  fromDate: string
+): Promise<OrderResponse[]> => {
+  assertPermission('Read')
+
+  return get(
+    {
+      response: t.array(OrderResponse),
+    },
+    {
+      path: `${TradingApiPaths.Orders}/closed`,
+      queryParameters: { from_date: fromDate },
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const getOrderById = async (orderId: UUID): Promise<OrderResponse> => {
+  assertPermission('Read')
+
+  return get(
+    {
+      response: OrderResponse,
+    },
+    {
+      path: `${TradingApiPaths.Orders}/${orderId}`,
       headers: {
         Authorization: `Bearer ${jwt.token}`,
       },
