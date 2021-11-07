@@ -18,27 +18,39 @@ import {
 const get = createGet(`${publicApiBaseUrl}`)
 
 export const getSymbols = async (): Promise<Array<ExchangeSymbol>> =>
-  get({ response: t.array(ExchangeSymbol) }, `${PublicApiPaths.Symbols}`)
+  get(
+    { response: t.array(ExchangeSymbol) },
+    { path: `${PublicApiPaths.Symbols}` }
+  )
 
 export const getOrderBook = async (
   symbol: SymbolName,
   depth: OrderBookDepth = '5'
 ): Promise<OrderBook> =>
-  get({ response: OrderBook }, `${PublicApiPaths.Symbols}/${symbol}/book`, {
-    depth,
-  })
+  get(
+    { response: OrderBook },
+    {
+      path: `${PublicApiPaths.Symbols}/${symbol}/book`,
+      queryParameters: {
+        depth,
+      },
+    }
+  )
 
 export const getTrades = async (symbol: SymbolName): Promise<Array<Trade>> =>
   get(
     { response: t.array(Trade) },
-    `${PublicApiPaths.Symbols}/${symbol}/trades`
+    { path: `${PublicApiPaths.Symbols}/${symbol}/trades` }
   )
 
 export const getRate = async (symbolName: SymbolName): Promise<Rate> =>
-  get({ response: Rate }, `${PublicApiPaths.Symbols}/${symbolName}/rate`)
+  get(
+    { response: Rate },
+    { path: `${PublicApiPaths.Symbols}/${symbolName}/rate` }
+  )
 
 export const getRates = async (): Promise<Rates> =>
-  get({ response: Rates }, `${PublicApiPaths.Symbols}/rates`)
+  get({ response: Rates }, { path: `${PublicApiPaths.Symbols}/rates` })
 
 export const getChartData = async (
   symbolName: SymbolName,
@@ -47,9 +59,11 @@ export const getChartData = async (
 ): Promise<ChartData> =>
   get(
     { response: ChartData },
-    `${PublicApiPaths.Symbols}/${symbolName}/chart`,
-    { count, barType }
+    {
+      path: `${PublicApiPaths.Symbols}/${symbolName}/chart`,
+      queryParameters: { count, barType },
+    }
   )
 
 export const getCurrencies = async (): Promise<Array<Currency>> =>
-  get({ response: t.array(Currency) }, `${PublicApiPaths.Currencies}`)
+  get({ response: t.array(Currency) }, { path: `${PublicApiPaths.Currencies}` })

@@ -45,6 +45,11 @@ const apiRequest = async <Body, Response, QueryParams>(
   )
 }
 
+type GetRequestParams<QueryParams> = {
+  path: string
+  queryParameters?: QueryParams
+  headers?: { [key: string]: string }
+}
 export const createGet =
   (baseUrl: string) =>
   async <Response, QueryParams>(
@@ -52,14 +57,13 @@ export const createGet =
       response: t.Type<Response, any>
       query: t.Type<QueryParams, any>
     }>,
-    path: string,
-    queryParameters?: { [key: string]: string }
+    { path, queryParameters, headers }: GetRequestParams<QueryParams>
   ): Promise<Response> => {
-    const params = new URLSearchParams(queryParameters)
+    const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
       { response: types.response, query: types.query },
       `${baseUrl}${path}?${params.toString()}`,
-      { method: 'get' }
+      { method: 'get', headers }
     )
   }
 
