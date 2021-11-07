@@ -153,3 +153,17 @@ export const getOrderById = async (orderId: UUID): Promise<OrderResponse> => {
     }
   )
 }
+
+export const getOpenOrders = async (): Promise<OrderResponse[]> => {
+  assertPermission('Read')
+
+  return get(
+    { response: t.array(OrderResponse) },
+    {
+      path: `${TradingApiPaths.Orders}/open`,
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
