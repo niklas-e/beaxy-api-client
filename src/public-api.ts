@@ -13,7 +13,7 @@ import {
   Rates,
   SymbolName,
   Trade,
-} from './types'
+} from './types-common'
 
 const get = createGet(`${publicApiBaseUrl}`)
 

@@ -3,21 +3,16 @@ import * as t from 'io-ts'
 import { createPost } from './api-client'
 import { tradingApiBaseUrl, TradingApiPaths } from './constants'
 import { getTokenClaims, PermissionClaim } from './jwt'
-import { SymbolName } from './types'
+import { SymbolName } from './types-common'
+import {
+  AuthRequestBody,
+  AuthResponse,
+  OrderResponse,
+  PlaceOrderResponse,
+} from './types-trading-api'
 import { UUID } from './utility-types'
 
 const post = createPost(tradingApiBaseUrl)
-
-const AuthRequestBody = t.type({
-  api_key_id: t.string,
-  api_secret: t.string,
-})
-const AuthResult = t.type({
-  expires_in: t.number,
-  access_token: t.string,
-  type: t.string,
-})
-type AuthResult = t.TypeOf<typeof AuthResult>
 
 type Jwt = {
   expiresAt: number
@@ -38,7 +33,7 @@ export const login = async (
   enableAutoRefresh = true
 ): Promise<Jwt> => {
   const authResult = await post(
-    { response: AuthResult, body: AuthRequestBody },
+    { response: AuthResponse, body: AuthRequestBody },
     {
       path: TradingApiPaths.Auth,
       body: {
@@ -81,12 +76,6 @@ const assertPermission = (requiredPermission: PermissionClaim) => {
   )
 }
 
-const TradingApiError = t.type({
-  error_code: t.string,
-  tracking_id: UUID,
-  items: t.array(t.string),
-})
-
 const OrderParameters = t.intersection([
   t.type({
     symbol: SymbolName,
@@ -102,12 +91,12 @@ const OrderParameters = t.intersection([
   }),
 ])
 type OrderParameters = t.TypeOf<typeof OrderParameters>
-const PlaceOrderResponse = t.union([
-  t.type({ order_id: UUID }),
-  TradingApiError,
-])
-export const placeOrder = async (params: OrderParameters) => {
+
+export const placeOrder = async (
+  params: OrderParameters
+): Promise<PlaceOrderResponse> => {
   assertPermission('Trade')
+
   return post(
     { body: t.UnknownRecord, response: PlaceOrderResponse },
     {
