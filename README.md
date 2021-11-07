@@ -7,6 +7,10 @@
 
 Unofficial [Beaxy Exchange](https://beaxy.com) API Client written in TypeScript with runtime type validation ([io-ts](https://www.npmjs.com/package/io-ts)).
 
+Beaxy Exchange trading API client is based on newer API (<https://tradewith.beaxy.com/api/v2>) which does not have official documentation yet.
+
+Beaxy Exchange public API client is based on the API documented here: <https://beaxyapiv2.docs.apiary.io/>
+
 ## Install
 
 ```bash
@@ -20,10 +24,21 @@ yarn add beaxy-api-client
 ## Usage
 
 ```typescript
-import { publicApi } from 'beaxy-api-client'
+import { publicApi, tradingApi } from 'beaxy-api-client'
 
-const getOrderBook = async (symbolName: string) =>
-  publicApi.getOrderBook(symbolName)
+const doMagicWithOrderBook = async (symbolName: string) => {
+  const book = await publicApi.getOrderBook(symbolName)
+  // ...do something
+}
+
+const buyMarket = async (symbol: string, quantity: number) => {
+  await tradingApi.placeOrder({
+    symbol,
+    quantity,
+    side: 'buy',
+    type: 'market'
+  })
+}
 
 ```
 
