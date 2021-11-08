@@ -9,6 +9,7 @@ import {
   AuthResponse,
   OrderResponse,
   PlaceOrderResponse,
+  TradesResponse,
 } from './types-trading-api'
 import { UUID } from './utility-types'
 
@@ -197,6 +198,21 @@ export const getOpenOrderById = async (
     },
     {
       path: `${TradingApiPaths.Orders}/open/${orderId}`,
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const getTrades = async (fromDate: string): Promise<TradesResponse> => {
+  assertPermission('Read')
+
+  return get(
+    { response: TradesResponse },
+    {
+      path: `${TradingApiPaths.Orders}/trades`,
+      queryParameters: { from_date: fromDate },
       headers: {
         Authorization: `Bearer ${jwt.token}`,
       },
