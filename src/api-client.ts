@@ -1,6 +1,5 @@
 import * as t from 'io-ts'
 import { request } from 'undici'
-import { HttpMethod } from 'undici/types/dispatcher'
 
 import { decodeInput } from './type-validation'
 import { NonEmptyString } from './utility-types'
@@ -32,7 +31,7 @@ const apiRequest = async <Body, Response, QueryParams>(
 ): Promise<Response> => {
   const { body, statusCode } = await request(url, {
     ...options,
-    method: options.method.toUpperCase() as HttpMethod,
+    method: options.method,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
