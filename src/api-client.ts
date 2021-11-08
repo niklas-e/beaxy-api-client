@@ -4,7 +4,11 @@ import { HttpMethod } from 'undici/types/dispatcher'
 
 import { decodeInput } from './type-validation'
 
-const RequestMethod = t.union([t.literal('get'), t.literal('post')])
+const RequestMethod = t.union([
+  t.literal('GET'),
+  t.literal('POST'),
+  t.literal('DELETE'),
+])
 type RequestMethod = t.TypeOf<typeof RequestMethod>
 
 const RequestOptions = t.type({
@@ -63,7 +67,7 @@ export const createGet =
     return await apiRequest(
       { response: types.response, query: types.query },
       `${baseUrl}${path}?${params.toString()}`,
-      { method: 'get', headers }
+      { method: 'GET', headers }
     )
   }
 
@@ -93,6 +97,28 @@ export const createPost =
     return await apiRequest(
       { response: types.response, query: types.query, body: types.body },
       `${baseUrl}${path}?${params.toString()}`,
-      { method: 'post', body: JSON.stringify(body), headers }
+      { method: 'POST', body: JSON.stringify(body), headers }
+    )
+  }
+
+type DeleteRequestParams<QueryParams> = {
+  path: string
+  queryParameters?: QueryParams
+  headers?: { [key: string]: string }
+}
+export const createDelete =
+  (baseUrl: string) =>
+  async <Response, QueryParams>(
+    types: Partial<{
+      response: t.Type<Response, any>
+      query: t.Type<QueryParams, any>
+    }>,
+    { path, queryParameters, headers }: DeleteRequestParams<QueryParams>
+  ): Promise<Response> => {
+    const params = new URLSearchParams(queryParameters ?? {})
+    return await apiRequest(
+      { response: types.response, query: types.query },
+      `${baseUrl}${path}?${params.toString()}`,
+      { method: 'DELETE', headers }
     )
   }
