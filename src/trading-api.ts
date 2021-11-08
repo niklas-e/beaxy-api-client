@@ -138,6 +138,20 @@ export const getClosedOrders = async (
   )
 }
 
+export const getOpenOrders = async (): Promise<OrderResponse[]> => {
+  assertPermission('Read')
+
+  return get(
+    { response: t.array(OrderResponse) },
+    {
+      path: `${TradingApiPaths.Orders}/open`,
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
 export const getOrderById = async (orderId: UUID): Promise<OrderResponse> => {
   assertPermission('Read')
 
@@ -154,13 +168,35 @@ export const getOrderById = async (orderId: UUID): Promise<OrderResponse> => {
   )
 }
 
-export const getOpenOrders = async (): Promise<OrderResponse[]> => {
+export const getClosedOrderById = async (
+  orderId: UUID
+): Promise<OrderResponse> => {
   assertPermission('Read')
 
   return get(
-    { response: t.array(OrderResponse) },
     {
-      path: `${TradingApiPaths.Orders}/open`,
+      response: OrderResponse,
+    },
+    {
+      path: `${TradingApiPaths.Orders}/closed/${orderId}`,
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const getOpenOrderById = async (
+  orderId: UUID
+): Promise<OrderResponse> => {
+  assertPermission('Read')
+
+  return get(
+    {
+      response: OrderResponse,
+    },
+    {
+      path: `${TradingApiPaths.Orders}/open/${orderId}`,
       headers: {
         Authorization: `Bearer ${jwt.token}`,
       },
