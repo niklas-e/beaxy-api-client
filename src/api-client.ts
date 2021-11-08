@@ -3,6 +3,7 @@ import { request } from 'undici'
 import { HttpMethod } from 'undici/types/dispatcher'
 
 import { decodeInput } from './type-validation'
+import { NonEmptyString } from './utility-types'
 
 const RequestMethod = t.union([
   t.literal('GET'),
@@ -41,7 +42,10 @@ const apiRequest = async <Body, Response, QueryParams>(
 
   const result = await body.text()
   if (statusCode >= 200 && statusCode < 300) {
-    return decodeInput(types.response, JSON.parse(result))
+    return decodeInput(
+      types.response,
+      NonEmptyString.is(result) ? JSON.parse(result) : undefined
+    )
   }
 
   throw new Error(

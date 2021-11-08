@@ -12,11 +12,21 @@ export type Override<T1, T2> = Omit<T1, keyof T2> & T2
 export interface RfcDatetimeStringBrand {
   readonly RfcDatetimeString: unique symbol
 }
-/** RFC 3339 datetime string */
+
 export type RfcDatetimeString = t.Branded<string, RfcDatetimeStringBrand>
 const rfcDateRegex = /^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
 export const RfcDatetimeString = t.brand(
   t.string,
   (s): s is RfcDatetimeString => rfcDateRegex.test(s),
   'RfcDatetimeString'
+)
+
+export interface NonEmptyStringBrand {
+  readonly NonEmptyString: unique symbol
+}
+export type NonEmptyString = t.Branded<string, NonEmptyStringBrand>
+export const NonEmptyString = t.brand(
+  t.string,
+  (s): s is NonEmptyString => s.length > 0,
+  'NonEmptyString'
 )
