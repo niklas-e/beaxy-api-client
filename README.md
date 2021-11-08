@@ -5,6 +5,10 @@
 
 > ⚠️ Note: this is a prerelease version and things might change quite a bit before version 1.0.0, so you should use exact version as your dependency to avoid unexpected (potentially breaking) changes ⚠️
 
+---
+
+> ❗ If you encounter any issues related to actual APIs, please be in touch with official Beaxy Exchange support via <https://beaxy.com/support>
+
 Unofficial [Beaxy Exchange](https://beaxy.com) API Client written in TypeScript with runtime type validation ([io-ts](https://www.npmjs.com/package/io-ts)).
 
 Beaxy Exchange trading API client is based on newer API (<https://tradewith.beaxy.com/api/v2>) which does not have official documentation yet.
