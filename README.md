@@ -11,9 +11,9 @@
 
 Unofficial [Beaxy Exchange](https://beaxy.com) API Client written in TypeScript with runtime type validation ([io-ts](https://www.npmjs.com/package/io-ts)).
 
-Beaxy Exchange trading API client is based on newer API (<https://tradewith.beaxy.com/api/v2>) which does not have official documentation yet.
+Beaxy Exchange trading API client is based on the newer API documented here: <https://docs.beaxy.com>
 
-Beaxy Exchange public API client is based on the API documented here: <https://beaxyapiv2.docs.apiary.io/>
+Beaxy Exchange public API client is based on the API documented here: <https://beaxyapiv2.docs.apiary.io>
 
 ## Install
 
