@@ -1,6 +1,11 @@
 import * as t from 'io-ts'
 
-import { SymbolName } from './types-common'
+import {
+  BaseCurrencyName,
+  CurrencyName,
+  SymbolName,
+  TermCurrencyName,
+} from './types-common'
 import { RfcDatetimeString, UUID } from './utility-types'
 
 export const AuthRequestBody = t.type({
@@ -89,3 +94,11 @@ export const TradesResponse = t.type({
 })
 
 export type TradesResponse = t.TypeOf<typeof TradesResponse>
+
+export const Wallet = t.type({
+  id: UUID,
+  currency: CurrencyName,
+  available_balance: t.string,
+  total_balance: t.string,
+})
+export type Wallet = t.TypeOf<typeof Wallet>

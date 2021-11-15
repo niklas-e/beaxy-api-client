@@ -10,6 +10,7 @@ import {
   OrderResponse,
   PlaceOrderResponse,
   TradesResponse,
+  Wallet,
 } from './types-trading-api'
 import { UUID } from './utility-types'
 
@@ -247,6 +248,34 @@ export const getTrades = async (fromDate: string): Promise<TradesResponse> => {
     {
       path: `${TradingApiPaths.Orders}/trades`,
       queryParameters: { from_date: fromDate },
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const getWallets = async (): Promise<Wallet[]> => {
+  assertPermission('Read')
+
+  return get(
+    { response: t.array(Wallet) },
+    {
+      path: `${TradingApiPaths.Wallets}`,
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const getWalletById = async (walletId: UUID): Promise<Wallet> => {
+  assertPermission('Read')
+
+  return get(
+    { response: Wallet },
+    {
+      path: `${TradingApiPaths.Wallets}/${walletId}`,
       headers: {
         Authorization: `Bearer ${jwt.token}`,
       },

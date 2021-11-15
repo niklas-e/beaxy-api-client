@@ -90,6 +90,9 @@ export const TermCurrencyName = t.union([
 ])
 export type TermCurrencyName = t.TypeOf<typeof TermCurrencyName>
 
+export const CurrencyName = t.union([BaseCurrencyName, TermCurrencyName])
+export type CurrencyName = t.TypeOf<typeof CurrencyName>
+
 export const ExchangeSymbol = t.type({
   symbol: SymbolName,
   name: SymbolName,
