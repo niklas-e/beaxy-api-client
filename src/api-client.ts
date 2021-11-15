@@ -20,11 +20,10 @@ type RequestOptions = {
   headers?: { [key: string]: string }
 }
 
-const apiRequest = async <Body, Response, QueryParams>(
+const apiRequest = async <Body, Response>(
   types: Partial<{
     body: t.Type<Body, any>
     response: t.Type<Response, any>
-    query: t.Type<QueryParams, any>
   }>,
   url: string,
   options: RequestOptions
@@ -52,75 +51,67 @@ const apiRequest = async <Body, Response, QueryParams>(
   )
 }
 
-type GetRequestParams<QueryParams> = {
+type GetRequestParams = {
   path: string
-  queryParameters?: QueryParams
+  queryParameters?: { [key: string]: string }
   headers?: { [key: string]: string }
 }
 export const createGet =
   (baseUrl: string) =>
-  async <Response, QueryParams>(
+  async <Response>(
     types: Partial<{
       response: t.Type<Response, any>
-      query: t.Type<QueryParams, any>
     }>,
-    { path, queryParameters, headers }: GetRequestParams<QueryParams>
+    { path, queryParameters, headers }: GetRequestParams
   ): Promise<Response> => {
     const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
-      { response: types.response, query: types.query },
+      { response: types.response },
       `${baseUrl}${path}?${params.toString()}`,
       { method: 'GET', headers }
     )
   }
 
-type PostRequestParams<Body, QueryParams> = {
+type PostRequestParams<Body> = {
   path: string
   body: Body
-  queryParameters?: QueryParams
+  queryParameters?: { [key: string]: string }
   headers?: { [key: string]: string }
 }
 
 export const createPost =
   (baseUrl: string) =>
-  async <Response, Body, QueryParams>(
+  async <Response, Body>(
     types: Partial<{
       response: t.Type<Response, any>
       body: t.Type<Body, any>
-      query: t.Type<QueryParams, any>
     }>,
-    {
-      path,
-      body,
-      queryParameters,
-      headers,
-    }: PostRequestParams<Body, QueryParams>
+    { path, body, queryParameters, headers }: PostRequestParams<Body>
   ): Promise<Response> => {
     const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
-      { response: types.response, query: types.query, body: types.body },
+      { response: types.response, body: types.body },
       `${baseUrl}${path}?${params.toString()}`,
       { method: 'POST', body: JSON.stringify(body), headers }
     )
   }
 
-type DeleteRequestParams<QueryParams> = {
+type DeleteRequestParams = {
   path: string
-  queryParameters?: QueryParams
+  queryParameters?: { [key: string]: string }
   headers?: { [key: string]: string }
 }
 export const createDelete =
   (baseUrl: string) =>
-  async <Response, QueryParams>(
+  async <Response>(
     types: Partial<{
       response: t.Type<Response, any>
-      query: t.Type<QueryParams, any>
     }>,
-    { path, queryParameters, headers }: DeleteRequestParams<QueryParams>
+    { path, queryParameters, headers }: DeleteRequestParams
   ): Promise<Response> => {
     const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
-      { response: types.response, query: types.query },
+      { response: types.response },
       `${baseUrl}${path}?${params.toString()}`,
       { method: 'DELETE', headers }
     )
