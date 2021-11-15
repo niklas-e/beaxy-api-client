@@ -3,6 +3,7 @@ export enum TradingApiPaths {
   Wallets = '/wallets',
   Health = '/health',
   Orders = '/orders',
+  TradingSettings = '/tradingsettings',
 }
 
 export enum PublicApiPaths {

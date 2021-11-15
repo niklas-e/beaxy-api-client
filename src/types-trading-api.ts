@@ -95,6 +95,29 @@ export const TradesResponse = t.type({
 
 export type TradesResponse = t.TypeOf<typeof TradesResponse>
 
+export const TradingSettings = t.type({
+  symbols: t.array(
+    t.type({
+      name: SymbolName,
+      term: TermCurrencyName,
+      base: BaseCurrencyName,
+      min_size: t.number,
+      max_size: t.number,
+      maker_fee: t.number,
+      taker_fee: t.number,
+    })
+  ),
+  currencies: t.array(
+    t.type({
+      code: CurrencyName,
+      name: t.string,
+      precision: t.number,
+    })
+  ),
+})
+
+export type TradingSettings = t.TypeOf<typeof TradingSettings>
+
 export const Wallet = t.type({
   id: UUID,
   currency: CurrencyName,
