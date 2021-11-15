@@ -1,6 +1,6 @@
 import * as t from 'io-ts'
 
-import { createGet, createPost } from './api-client'
+import { createDelete, createGet, createPost } from './api-client'
 import { tradingApiBaseUrl, TradingApiPaths } from './constants'
 import { getTokenClaims, PermissionClaim } from './jwt'
 import { SymbolName } from './types-common'
@@ -15,6 +15,7 @@ import { UUID } from './utility-types'
 
 const post = createPost(tradingApiBaseUrl)
 const get = createGet(tradingApiBaseUrl)
+const deleteRequest = createDelete(tradingApiBaseUrl)
 
 type Jwt = {
   expiresAt: number
@@ -195,6 +196,39 @@ export const getOpenOrderById = async (
   return get(
     {
       response: OrderResponse,
+    },
+    {
+      path: `${TradingApiPaths.Orders}/open/${orderId}`,
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const cancelOpenOrders = async (symbol?: SymbolName): Promise<void> => {
+  assertPermission('Trade')
+
+  return deleteRequest(
+    {
+      response: t.void,
+    },
+    {
+      path: `${TradingApiPaths.Orders}/open`,
+      queryParameters: { symbol },
+      headers: {
+        Authorization: `Bearer ${jwt.token}`,
+      },
+    }
+  )
+}
+
+export const cancelOrderById = async (orderId: UUID): Promise<void> => {
+  assertPermission('Trade')
+
+  return deleteRequest(
+    {
+      response: t.void,
     },
     {
       path: `${TradingApiPaths.Orders}/open/${orderId}`,
