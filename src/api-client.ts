@@ -53,7 +53,7 @@ const apiRequest = async <Body, Response>(
 
 type GetRequestParams = {
   path: string
-  queryParameters?: { [key: string]: string }
+  queryParameters?: { [key: string]: string | undefined }
   headers?: { [key: string]: string }
 }
 export const createGet =
@@ -64,10 +64,9 @@ export const createGet =
     }>,
     { path, queryParameters, headers }: GetRequestParams
   ): Promise<Response> => {
-    const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
       { response: types.response },
-      `${baseUrl}${path}?${params.toString()}`,
+      `${baseUrl}${path}?${toQueryParams(queryParameters ?? {})}`,
       { method: 'GET', headers }
     )
   }
@@ -75,7 +74,7 @@ export const createGet =
 type PostRequestParams<Body> = {
   path: string
   body: Body
-  queryParameters?: { [key: string]: string }
+  queryParameters?: { [key: string]: string | undefined }
   headers?: { [key: string]: string }
 }
 
@@ -88,17 +87,16 @@ export const createPost =
     }>,
     { path, body, queryParameters, headers }: PostRequestParams<Body>
   ): Promise<Response> => {
-    const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
       { response: types.response, body: types.body },
-      `${baseUrl}${path}?${params.toString()}`,
+      `${baseUrl}${path}?${toQueryParams(queryParameters ?? {})}`,
       { method: 'POST', body: JSON.stringify(body), headers }
     )
   }
 
 type DeleteRequestParams = {
   path: string
-  queryParameters?: { [key: string]: string }
+  queryParameters?: { [key: string]: string | undefined }
   headers?: { [key: string]: string }
 }
 export const createDelete =
@@ -109,10 +107,16 @@ export const createDelete =
     }>,
     { path, queryParameters, headers }: DeleteRequestParams
   ): Promise<Response> => {
-    const params = new URLSearchParams(queryParameters ?? {})
     return await apiRequest(
       { response: types.response },
-      `${baseUrl}${path}?${params.toString()}`,
+      `${baseUrl}${path}?${toQueryParams(queryParameters ?? {})}`,
       { method: 'DELETE', headers }
     )
   }
+
+const toQueryParams = (values: { [key: string]: string | undefined }) => {
+  const definedValues = Object.fromEntries(
+    Object.entries(values).filter(([, value]) => value !== undefined)
+  ) as { [key: string]: string }
+  return new URLSearchParams(definedValues).toString()
+}
