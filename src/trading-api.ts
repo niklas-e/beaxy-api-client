@@ -2,11 +2,13 @@ import * as t from 'io-ts'
 
 import { createDelete, createGet, createPost } from './api-client'
 import { tradingApiBaseUrl, TradingApiPaths } from './constants'
-import { getTokenClaims, PermissionClaim } from './jwt'
+import {
+  assertPermission,
+  getAuthHeaders,
+  login as tradingLogin,
+} from './trading-auth'
 import { SymbolName } from './types-common'
 import {
-  AuthRequestBody,
-  AuthResponse,
   OrderResponse,
   PlaceOrderResponse,
   TradesResponse,
@@ -18,68 +20,6 @@ import { UUID } from './utility-types'
 const post = createPost(tradingApiBaseUrl)
 const get = createGet(tradingApiBaseUrl)
 const deleteRequest = createDelete(tradingApiBaseUrl)
-
-type Jwt = {
-  expiresAt: number
-  token: string
-  permissions: PermissionClaim[]
-}
-let jwt: Jwt
-
-/**
- * Call auth endpoint. Note: the expiry time is set with safe margin of 3 minutes.
- * @param key api key
- * @param secret api secret
- * @param enableAutoRefresh set up interval for refreshing the auth - i.e. call this function once and forget auth
- */
-export const login = async (
-  key: string,
-  secret: string,
-  enableAutoRefresh = true
-): Promise<Jwt> => {
-  const authResult = await post(
-    { response: AuthResponse, body: AuthRequestBody },
-    {
-      path: TradingApiPaths.Auth,
-      body: {
-        api_key_id: key,
-        api_secret: secret,
-      },
-    }
-  )
-  const expiryInMilliseconds = authResult.expires_in * 1000
-  const safeExpiryModifier = 1000 * 60 * 3
-  const claims = getTokenClaims(authResult.access_token)
-  jwt = {
-    expiresAt: Date.now() + expiryInMilliseconds - safeExpiryModifier,
-    token: authResult.access_token,
-    permissions: claims.prm,
-  }
-
-  if (enableAutoRefresh) {
-    const waitRefresh = setInterval(() => {
-      if (Date.now() < jwt.expiresAt) return
-      clearInterval(waitRefresh)
-
-      login(key, secret, enableAutoRefresh)
-    }, 5000)
-  }
-
-  return { ...jwt }
-}
-
-const assertPermission = (requiredPermission: PermissionClaim) => {
-  if (!jwt) {
-    throw new Error(
-      'You must use login() before using other trading API endpoints'
-    )
-  }
-  if (jwt.permissions.includes(requiredPermission)) return
-
-  throw new Error(
-    `Auth token does not have required permissions to perform the action.`
-  )
-}
 
 const OrderParameters = t.intersection([
   t.type({
@@ -117,7 +57,7 @@ export const placeOrder = async (
         price: params.price,
       },
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -136,7 +76,7 @@ export const getClosedOrders = async (
       path: `${TradingApiPaths.Orders}/closed`,
       queryParameters: { from_date: fromDate },
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -150,7 +90,7 @@ export const getOpenOrders = async (): Promise<OrderResponse[]> => {
     {
       path: `${TradingApiPaths.Orders}/open`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -166,7 +106,7 @@ export const getOrderById = async (orderId: UUID): Promise<OrderResponse> => {
     {
       path: `${TradingApiPaths.Orders}/${orderId}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -184,7 +124,7 @@ export const getClosedOrderById = async (
     {
       path: `${TradingApiPaths.Orders}/closed/${orderId}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -202,7 +142,7 @@ export const getOpenOrderById = async (
     {
       path: `${TradingApiPaths.Orders}/open/${orderId}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -219,7 +159,7 @@ export const cancelOpenOrders = async (symbol?: SymbolName): Promise<void> => {
       path: `${TradingApiPaths.Orders}/open`,
       queryParameters: { symbol },
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -235,7 +175,7 @@ export const cancelOrderById = async (orderId: UUID): Promise<void> => {
     {
       path: `${TradingApiPaths.Orders}/open/${orderId}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -250,7 +190,7 @@ export const getTrades = async (fromDate: string): Promise<TradesResponse> => {
       path: `${TradingApiPaths.Orders}/trades`,
       queryParameters: { from_date: fromDate },
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -264,7 +204,7 @@ export const getTradingSettings = async (): Promise<TradingSettings> => {
     {
       path: `${TradingApiPaths.TradingSettings}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -278,7 +218,7 @@ export const getWallets = async (): Promise<Wallet[]> => {
     {
       path: `${TradingApiPaths.Wallets}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
@@ -292,8 +232,10 @@ export const getWalletById = async (walletId: UUID): Promise<Wallet> => {
     {
       path: `${TradingApiPaths.Wallets}/${walletId}`,
       headers: {
-        Authorization: `Bearer ${jwt.token}`,
+        ...getAuthHeaders(),
       },
     }
   )
 }
+
+export const login = tradingLogin
