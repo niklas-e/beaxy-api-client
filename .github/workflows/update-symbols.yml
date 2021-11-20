@@ -1,0 +1,31 @@
+name: update-symbols
+on:
+  workflow_dispatch:
+jobs:
+  update-symbols:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Run update script
+        run: yarn update-symbols
+      - name: Check Git status
+        id: git
+        shell: bash
+        run: |
+          RESULT=$(git status --porcelain --untracked-files=no)
+          if [[ $RESULT == *"src/types-commmon.ts"* ]]; then
+            echo "::set-output name=status::true"
+          fi
+      - name: Push to git
+        if: contains(steps.git.outputs.result, 'true')
+        run: |
+          git add src/types-common.ts
+          git commit -m "Update symbols from exchange"
+          git push
