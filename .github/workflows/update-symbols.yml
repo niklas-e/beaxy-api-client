@@ -20,7 +20,7 @@ jobs:
         shell: bash
         run: |
           RESULT=$(git status --porcelain --untracked-files=no)
-          if [[ $RESULT == *"src/types-commmon.ts"* ]]; then
+          if [[ $RESULT == *"src/types-common.ts"* ]]; then
             echo "::set-output name=status::true"
           fi
       - name: Push to git
