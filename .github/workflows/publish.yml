@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Switch to main branch from tag
-        run: git switch -
+        run: git switch main
       - name: Setup
         uses: actions/setup-node@v2
         with:
