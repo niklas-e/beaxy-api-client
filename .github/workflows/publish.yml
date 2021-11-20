@@ -10,6 +10,8 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v2
+      - name: Switch to main branch from tag
+        run: git switch -
       - name: Setup
         uses: actions/setup-node@v2
         with:
@@ -34,4 +36,7 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git add package.json .yarn/versions/*
           git commit -m "Bump version to ${{ github.event.release.tag_name }}"
+
+          git tag -f -a ${{ github.event.release.tag_name }}
           git push
+          git push origin -f ${{ github.event.release.tag_name }}
