@@ -15,16 +15,16 @@ jobs:
         run: yarn
       - name: Run update script
         run: yarn update-symbols
-      - name: Check Git status
-        id: git
+      - name: Determine if any changes were made
+        id: has-changes
         shell: bash
         run: |
           RESULT=$(git status --porcelain --untracked-files=no)
           if [[ $RESULT == *"src/types-common.ts"* ]]; then
-            echo "::set-output name=status::true"
+            echo "::set-output name=result::true"
           fi
       - name: Push to git
-        if: contains(steps.git.outputs.result, 'true')
+        if: contains(steps.has-changes.outputs.result, 'true')
         run: |
           git add src/types-common.ts
           git commit -m "Update symbols from exchange"
