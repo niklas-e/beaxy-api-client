@@ -37,8 +37,8 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
           git add package.json .yarn/versions/*
-          git commit -m "Bump version to ${{ github.event.release.tag_name }}"
-
-          git tag -f -a ${{ github.event.release.tag_name }}
+          MESSAGE="Bump version to ${{ github.event.release.tag_name }}"
+          git commit -m $MESSAGE
+          git tag -f -a ${{ github.event.release.tag_name }} -m $MESSAGE
           git push
           git push origin -f ${{ github.event.release.tag_name }}
