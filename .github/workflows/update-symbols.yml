@@ -27,7 +27,7 @@ jobs:
         if: contains(steps.has-changes.outputs.result, 'true')
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.username "${{ github.actor }}"
+          git config --global user.name "${{ github.actor }}"
           git add src/types-common.ts
           git commit -m "Update symbols from exchange"
           git push
