@@ -17,7 +17,8 @@
     "build": "tsc",
     "lint": "eslint",
     "fix": "eslint --fix",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "update-symbols": "zx scripts/update-symbols.mjs"
   },
   "dependencies": {
     "fp-ts": "^2.11.5",
@@ -34,7 +35,8 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^1.1.5",
     "prettier": "^2.4.1",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "zx": "^4.2.0"
   },
   "packageManager": "yarn@3.1.0",
   "bugs": {
